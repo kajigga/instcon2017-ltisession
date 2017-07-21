@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block main_content %}
+ {% if session['lis_person_name_full'] %}
+ <h2>{{ session['lis_person_name_full'] }}</h2>
+ {% endif %}
+
+ <h3>LTI Session Values</h3>
+ <table class='table table-striped'>
+ {% for key in session|sort %}
+ <tr>
+ <th>{{ key }}</th>
+ <td>{{ session[key] }}</td>
+ </tr>
+ {% endfor %}
+ </dl>
+{% endblock %}
