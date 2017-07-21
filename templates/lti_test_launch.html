@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block main_content %}
+<div class='row'>
+ <div class='col-md-12'>
+ <h3>GET Parameters</h3>
+ <table class='table table-striped'>
+ <tr><th>key</th><th>value</th></tr>
+ {% for k in get | dictsort %}
+ <tr>
+ <td>{{ k[0] }}</td>
+ <td>{{ k[1] }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ <h3>POST Parameters</h3>
+ <table class='table table-striped'>
+ <tr><th>key</th><th>value</th></tr>
+ {% for k in post | dictsort %}
+ <tr>
+ <td>{{ k[0] }}</td>
+ <td>{{ k[1] }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+</div>
+</div>
+{% endblock %}

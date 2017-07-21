@@ -23,6 +23,12 @@ def index():
 def hello_world():
     return 'Hello World!'
 
+@app.route('/lti/testlaunch', methods=['GET', 'POST'])
+def lti_test_launch():
+    # POST parameters
+    return render_template('lti_test_launch.html', post=request.form,
+        get=request.args)
+
 # I like to make certain values available on any rendered template without
 # explicitly naming them. While these values won't change very often, I would
 # rather not keep track of where they are used so I don't have to remember to
@@ -30,8 +36,8 @@ def hello_world():
 @app.context_processor
 def inject_app_info():
   return {
-      'version':"Step 0.1",
-      'project_name':'Instcon 2017 - Developing LTI Tools'
+      'version': 'Step 2',
+      'project_name': 'Instcon 2017 - Developing LTI Tools'
       }
 
 if __name__ == '__main__':
