@@ -11,6 +11,7 @@ from tools_list import tools
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'a-really-long-should-be-unique-random-string'
+G_API_KEY = 'AIzaSyBmuO_9hgtG24L_8GQYGUQx5EosQ25MF0M'
 
 # Canvas sends some custom LTI launch parameters. Add these to the list of
 # known parameters so that pylti will save them.
@@ -19,9 +20,14 @@ LTI_PROPERTY_LIST.extend([
   'custom_canvas_course_id',
   'custom_canvas_enrollment_state',
   'custom_canvas_user_id',
-  'custom_canvas_user_login_id'
-  ])
-
+  'custom_canvas_user_login_id',
+  'ext_content_return_types',
+  'ext_outcome_data_values_accepted',
+  'ext_outcome_result_total_score_accepted',
+  'ext_content_intended_use',
+  'ext_content_return_url',
+  'ext_content_file_extensions'
+])
 # Canvas uses full standard roles from the LTI spec. PYLTI does not include
 # them by default so we add these to the list of known roles.
 
@@ -77,18 +83,33 @@ def lti_test_launch():
 
 @app.route('/lti/launch', methods=['POST'])
 @lti(error=error, request='initial')
-def first_lti_launch(lti, *args, **kwargs):
-  return redirect(url_for('lti_profile', _external=True, _scheme='https'))
+def first_lti_launch(lti, tool_id=None, *args, **kwargs):
+  try:
+    tool_id = int(request.args.get('tool_id', tool_id)) # parameters come in as strings convert this to an int
+    return redirect(url_for(tools[tool_id]['entry'], _external=True, _scheme='https'))
+  except Exception:
+    # If we get to this point, no config id matches a known config.
+    # redirect the user to the profile page
+    return redirect(url_for('lti_profile', _external=True, _scheme='https'))
 
 @app.route('/lti/profile', methods=['GET'])
 @lti(error=error, request='session')
 def lti_profile(lti, *args, **kwargs):
   return render_template('lti_profile.html')
 
+@app.route('/lti/mapit')
+@lti(error=error, request='session')
+def mapit_launch(lti):
+
+  # Don't forget to add the template file.
+  return render_template('mapit_launch.html',G_API_KEY=G_API_KEY)
+
 @app.route('/lti/config/<tool_id>')
 def lti_config(tool_id):
   tool_id = int(tool_id)
-  config_xml = render_template('xml/config.xml', tool=tools[tool_id])
+  tool_config = tools[tool_id]
+  tool_config['url'] = url_for('first_lti_launch', _external=True, _scheme='https', tool_id=tool_id)
+  config_xml = render_template('xml/config.xml', tool=tool_config)
   response = make_response(config_xml)
   response.headers["Content-Type"] = "application/xml" 
   return response

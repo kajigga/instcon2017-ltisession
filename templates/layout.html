@@ -20,6 +20,7 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    {% block extra_css%}{% endblock %}
   </head>
 
   <body>
@@ -43,23 +44,7 @@
       <div class="starter-template">
         <h1>{{ page_title }}</h1>
 
-{% block main_content %}
-          <p class="lead">If you are seeing this text, then you haven't 
-          extended the <em>main_content</em> block. All you get is this text and a mostly barebones HTML
-          document.</p>
-<pre>
-<code>
-{% raw %}
-{% extends "layout.html" %}
-
-{% block main_content %}
-Anything here will be the content of the block.
-{% endblock %}
-
-{% endraw %}
-</code>
-</pre>
-{% endblock %}
+{% block main_content %}{% endblock %}
       </div>
 
     </div><!-- /.container -->
@@ -73,5 +58,6 @@ Anything here will be the content of the block.
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
+{% block extra_js %}{% endblock %}
   </body>
 </html>

@@ -1,0 +1,183 @@
+{% extends "layout.html" %}
+
+{% block main_content %}
+<div class='row'>
+  <div class='col-md-6'>
+    {% if 'Learner' in session['roles'] %}
+      <p>You are a student, this page should load a map that was created by the
+      instructor before the course was published.</p>
+    {% endif %}
+  
+    {% if 'Instructor' in session['roles'] or 'Administrator' in session['roles'] %}
+      <p>You are an instructor.</p>
+  
+      <form id='instructor_controls'>
+        <div class='form-group'>
+        <label for='recenterLocation'>Search Location</label>
+        <input type='textbox' class='form-control' id='newLocation'
+        placeholder='e.g. "Dallas, Texas"'>
+        </div>
+      </form>
+    {% endif %}
+    <div id='map'></div>
+  
+  </div>
+ 
+  <div class='col-md-6'>
+    <div id='total'></div>
+    <div id='right-panel'>
+      <h2>Marks</h2> 
+      {% if 'Instructor' in session['roles'] %}
+        <form id='marker_editor'>
+          <input type='hidden' id='selected_marker_id'>
+          <div class='form-group'>
+            <label for='marker_label'>Label</label>
+            <input type='textbox' class='form-control' name='marker_label'
+            id='selected_marker_label'
+            placeholder='e.g. Place where Pecos Bill shot his first buffalo.'>
+          </div>
+          <div class='form-group'>
+            <label for='marker_image'>Image</label>
+            <input type='textbox' class='form-control' name='image'
+              id='selected_marker_image'
+              placeholder='e.g. url to image'>
+          </div>
+          <div class='form-group'>
+            <label for='marker_description'>Description</label>
+            <textarea rows='4' type='textbox' class='form-control' name='description'
+              id='selected_marker_description'
+              placeholder='e.g. Description about place where Pecos Bill shot his first buffalo.'></textarea>
+          </div>
+        </form>
+        <div id='marker-list'><ul></ul></div>
+      {% else %}
+        <dl>
+          <dt>Label</dt>
+          <dd id='marker_label'></dd>
+          <dt>Description</dt>
+          <dd id='marker_description'></dd>
+        </dl>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+  <style>
+   html, body {
+   height: 100%;
+   margin: 0;
+   padding: 0;
+   }
+   #map {
+   width: 100%%;
+   height: 500px;
+   }
+
+   /* Google Map Styles see
+   http://en.marnoto.com/2014/09/5-formas-de-personalizar-infowindow.html */
+   #map-canvas {
+   margin: 0;
+   padding: 0;
+   height: 400px;
+   max-width: none;
+   }
+   #map-canvas img {
+   max-width: none !important;
+   }
+   .gm-style-iw {
+   width: 350px !important; 
+   top: 15px !important;
+   left: 0px !important;
+   background-color: #fff;
+   box-shadow: 0 1px 6px rgba(178, 178, 178, 0.6);
+   border: 1px solid rgba(72, 181, 233, 0.6);
+   border-radius: 2px 2px 10px 10px;
+   }
+   #iw-container {
+   margin-bottom: 10px;
+   }
+   #iw-container .iw-title {
+   font-family: 'Open Sans Condensed', sans-serif;
+   font-size: 22px;
+   font-weight: 400;
+   padding: 10px;
+   background-color: #48b5e9;
+   color: white;
+   margin: 0;
+   border-radius: 2px 2px 0 0;
+   }
+   #iw-container .iw-content {
+   font-size: 13px;
+   line-height: 18px;
+   font-weight: 400;
+   margin-right: 1px;
+   padding: 15px 5px 20px 15px;
+   max-height: 140px;
+   overflow-y: auto;
+   overflow-x: hidden;
+   width: 350px;
+   }
+   .iw-content img {
+   float: right;
+   margin: 0 5px 5px 10px; 
+   }
+   .iw-subTitle {
+   font-size: 16px;
+   font-weight: 700;
+   padding: 5px 0;
+   }
+   .iw-bottom-gradient {
+   position: absolute;
+   width: 326px;
+   height: 25px;
+   bottom: 10px;
+   right: 18px;
+   background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+   background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+   background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+   background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+   }
+
+   .marker-row { cursor: pointer; }
+   .marker-row i { color: green; }
+
+  </style>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="https://maps.googleapis.com/maps/api/js?key={{ G_API_KEY }}"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
+
+  <script>
+  var LTI_ENV = { 
+   custom_canvas_user_id: '{{ session.custom_canvas_user_id }}', 
+   context_id: '{{session.context_id}}' ,
+   resource_link_id: '{{session.resource_link_id}}',
+   is_instructor: false
+  };
+  </script>
+
+  <script src="/static/map_lti.js"></script>
+
+  {% if 'Instructor' in session['roles'] or 'Administrator' in session['roles'] %}
+    <script src="/static/map_lti_inst.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js"></script>
+  {% endif %}
+
+  <script>
+    $(document).ready(function(){
+     initMap();
+     {% if 'Instructor' in session['roles'] or 'Administrator' in session['roles'] %}
+       LTI_ENV.is_instructor = true;
+       initMapInstructor();
+     {% else %}
+       LTI_ENV.is_instructor = false;
+     {% endif %}
+    });
+  </script>
+
+{% endblock %}

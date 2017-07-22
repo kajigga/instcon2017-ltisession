@@ -1,19 +1,29 @@
-tools = [{ 
- 'domain' : 'coolwebteacher.pythonanywhere.com',
- 'title' : 'Step 3.1 Config',
- 'description' : 'This is the step 3.1 config xml',
- 'nav' : [
-   {
-   'type':'course_navigation',
-   'enabled': True,
-   'default':'enabled',
-   'text': 'course navigation text',
-   },
-   { 
-   'type':'account_navigation',
-   'enabled': True,
-   'text': 'Acct. Link Text',
-   }
- ]
-}
+domain = 'coolwebteacher.pythonanywhere.com'
+tools = [{
+   'domain' : domain,
+   'title' : 'User Profile',
+   'description' : 'User Profile Tool',
+   'entry': 'lti_profile',
+   'nav' : [
+     {
+     'type':'course_navigation',
+     'enabled': True,
+     'default':'enabled',
+     'text': 'course navigation text',
+     }
+   ]
+  },{ 
+   'domain' : domain,
+   'title' : 'Google Map Tool',
+   'description' : 'This is the step 4 Google Map Tool',
+   'entry': 'mapit_launch',
+   'nav' : [
+     {
+     'type':'course_navigation',
+     'enabled': True,
+     'default':'enabled',
+     'text': 'course navigation text',
+     }
+   ]
+  }
 ]

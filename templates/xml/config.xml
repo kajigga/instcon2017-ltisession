@@ -8,7 +8,7 @@
  http://www.imsglobal.org/xsd/imsbasiclti_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0.xsd
  http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd
  http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd">
- <blti:launch_url>{{ protocol|default('https') }}://{{ tool.domain }}/lti/launch</blti:launch_url>
+ <blti:launch_url>{{ tool.url }}</blti:launch_url>
  <blti:title>{{ tool.title }}</blti:title>
  <blti:description>{{ tool.description }}</blti:description>
  <blti:extensions platform="canvas.instructure.com">
@@ -23,7 +23,7 @@
  {% if nav.icon_url %}<lticm:property name="icon_url">https://dl.dropboxusercontent.com/u/1647772/lti.png</lticm:property>{% endif %}
  {% if nav.labels %}<lticm:options name="labels">
  {% for label in nav.labels %}
- <lticm:property name="{{ label.locale }}">{{ label.label }}</lticm:property> 
+   <lticm:property name="{{ label.locale }}">{{ label.label }}</lticm:property> 
  {% endfor %}</lticm:options>
  {% endif %}
  </lticm:options>
