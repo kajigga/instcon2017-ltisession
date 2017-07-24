@@ -102,12 +102,13 @@
     $('#time_left').text(count);
     $('#save_btn').click(submit_score);
     $('#progress_countdown').click(function(){
-      if(clicks <= 100){
-        clicks = clicks + 1;
-        console.log('st'+clicks);
-        $('#progress_countdown div.progress-bar').css('width', clicks+'%').attr('aria-valuenow', clicks);
-        $('#percentage').val(clicks);
+      clicks = clicks + 1;
+      if(clicks > 100){
+        clicks = 100;
       }
+      console.log('st'+clicks);
+      $('#progress_countdown div.progress-bar').css('width', clicks+'%').attr('aria-valuenow', clicks);
+      $('#percentage').val(clicks);
     });
   });
 
