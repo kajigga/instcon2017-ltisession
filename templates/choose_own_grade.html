@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block main_content %}
+<div class='row'>
+  <form method='POST' action='{{ url_for('choose_own_grade_selected') }}'>
+  <div class='col-md-12'>
+    <h1>Click For Points</h1>
+    <p>Click on the button below to get points for the assignment. We use
+      percentage here because the LTI tool won't know how many points are connected
+      to this assignment in Canvas.</p>
+  </div>
+  <div class='col-md-12'>
+      <div class='input-group col-md-4 input-lg col-md-offset-4' style='text-align: center'>
+        <input type='number' class="form-control" 
+                             style="height: 100px; font-size: 4em"
+                             id='percentage' name='percentage' step='any'
+                             min='0' max='100'
+                             placeholder='25' aria-describedby="basic-addon1"/>
+        <span class="input-group-addon add-on" id="basic-addon1"
+           style="height: 100px; font-size: 4em" >%</span>
+      </div>
+  </div>
+</div>
+
+<div class='row'>
+  <div class='col-md-4 col-md-offset-5'>
+      <button type="submit" class="btn btn-primary btn-lg" id='save_btn'>Save Score</button>
+  </div>
+</div>
+</form>
+
+</div> <!-- /container -->
+
+<div class="modal fade" id='my_modal'>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Grade <span id='sub_status'></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><span id='sub_status_msg'></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+          data-dismiss="modal">Great, thanks!</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // submit the score via ajax and display a message
+  $(document).ready(function(){
+    $('#save_btn').click(function(e){
+      e.preventDefault();
+      var url = '{{ url_for('choose_own_grade_selected') }}';
+      $.post(url, {
+        percentage: $('#percentage').val() 
+      }).then(function(response){
+        console.log(response);
+        $('#sub_status').text((response.response ? "Submitted" : "Not Submitted"));
+        if(response.response){
+          $('#sub_status_msg').text('Your grade of '+ $('#percentage').val() +'% was submitted to Canvas.');
+        }else{
+          $('#sub_status_msg').text('There was a problem submitting to Canvas.');
+        }
+        $('#my_modal').modal()
+      });
+    });
+  });
+</script>
+{% endblock %}
+
+{% block extra_css %}
+{% endblock %}

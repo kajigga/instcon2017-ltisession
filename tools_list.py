@@ -25,5 +25,11 @@ tools = [{
      'text': 'course navigation text',
      }
    ]
+  },
+  { 
+   'domain' : domain,
+   'title' : 'Choose own Gradel',
+   'description' : 'This is the step 5 Choose own grade Tool',
+   'entry': 'choose_own_grade',
   }
 ]
