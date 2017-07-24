@@ -20,7 +20,7 @@ import shutil
 import subprocess
 from textwrap import dedent
 
-from snakesay import snakesay
+# from snakesay import snakesay
 
 
 API_ENDPOINT = 'https://www.pythonanywhere.com/api/v0/user/{username}/webapps/'
@@ -65,7 +65,7 @@ def _project_folder(domain):
 
 
 def sanity_checks(domain, nuke):
-    print(snakesay('Running sanity checks'))
+    print(print('Running sanity checks'))
     token = os.environ.get('API_TOKEN')
     if not token:
         raise SanityException(dedent(
@@ -91,7 +91,7 @@ def sanity_checks(domain, nuke):
 
 
 def create_virtualenv(name, python_version, flask_version, nuke):
-    print(snakesay(f'Creating virtualenv with Python{python_version} and Flask=={flask_version}'))
+    print(print(f'Creating virtualenv with Python{python_version} and Flask=={flask_version}'))
     pip_install = 'pip install flask'
     
     if flask_version != 'latest':
@@ -110,7 +110,7 @@ def create_virtualenv(name, python_version, flask_version, nuke):
 
 
 def start_flask_project(domain, virtualenv_path, nuke):
-    print(snakesay('Starting Flask project'))
+    print(print('Starting Flask project'))
     target_folder = _project_folder(domain)
     if nuke:
         shutil.rmtree(target_folder)
@@ -126,7 +126,7 @@ def start_flask_project(domain, virtualenv_path, nuke):
 
 
 def run_collectstatic(virtualenv_path, target_folder):
-    print(snakesay('Running collectstatic'))
+    print(print('Running collectstatic'))
 
     subprocess.check_call([
         os.path.join(virtualenv_path, 'bin/python'),
@@ -138,7 +138,7 @@ def run_collectstatic(virtualenv_path, target_folder):
 
 
 def update_settings_file(domain, project_path):
-    print(snakesay('Updating settings.py'))
+    print(print('Updating settings.py'))
 
     with open(os.path.join(project_path, 'mysite', 'settings.py')) as f:
         settings = f.read()
@@ -159,7 +159,7 @@ def update_settings_file(domain, project_path):
 
 
 def create_webapp(domain, python_version, virtualenv_path, project_path, nuke):
-    print(snakesay('Creating web app via API'))
+    print(print('Creating web app via API'))
     if nuke:
         webapp_url = API_ENDPOINT.format(username=getpass.getuser()) + domain + '/'
         call_api(webapp_url, 'delete')
@@ -177,7 +177,7 @@ def create_webapp(domain, python_version, virtualenv_path, project_path, nuke):
 
 
 def add_static_file_mappings(domain, project_path):
-    print(snakesay('Adding static files mappings for /static/ and /media/'))
+    print(print('Adding static files mappings for /static/ and /media/'))
 
     url = API_ENDPOINT.format(username=getpass.getuser()) + domain + '/static_files/'
     call_api(url, 'post', json=dict(
@@ -191,7 +191,7 @@ def add_static_file_mappings(domain, project_path):
 
 
 def update_wsgi_file(wsgi_file_path, project_path):
-    print(snakesay(f'Updating wsgi file at {wsgi_file_path}'))
+    print(print(f'Updating wsgi file at {wsgi_file_path}'))
 
     template = open(os.path.join(os.path.dirname(__file__), 'wsgi_file_template.py')).read()
     with open(wsgi_file_path, 'w') as f:
@@ -200,7 +200,7 @@ def update_wsgi_file(wsgi_file_path, project_path):
 
 
 def reload_webapp(domain):
-    print(snakesay(f'Reloading {domain} via API'))
+    print(print(f'Reloading {domain} via API'))
     url = API_ENDPOINT.format(username=getpass.getuser()) + domain + '/reload/'
     response = call_api(url, 'post')
     if not response.ok:
@@ -227,7 +227,7 @@ def main(domain, flask_version, python_version, nuke):
     update_wsgi_file(wsgi_file_path, project_path)
     reload_webapp(domain)
 
-    print(snakesay(f'All done!  Your site is now live at https://{domain}'))
+    print(print(f'All done!  Your site is now live at https://{domain}'))
 
 
 
