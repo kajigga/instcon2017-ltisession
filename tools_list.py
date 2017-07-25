@@ -28,7 +28,7 @@ tools = [{
   },{
      'domain' : domain,
      'title' : 'Lorem Ipsum',
-     'entry': 'baconIpsumChoose',
+     'entry': 'lorem_ipsum.baconIpsumChoose',
      'description' : '''This is the step 6 LTI Tool, which enables a richtext
      editor button that, when clicked, allows the user to insert a Lorem Ipsum
      text snippet.''',
@@ -41,6 +41,6 @@ tools = [{
    'domain' : domain,
    'title' : 'Choose own Gradel',
    'description' : 'This is the step 5 Choose own grade Tool',
-   'entry': 'choose_own_grade',
+   'entry': 'choose_own_grade.choose_own_grade',
   }
 ]
