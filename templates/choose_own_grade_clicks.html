@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+
+{% block main_content %}
+<form method='POST' action='{{ url_for('choose_own_grade_selected') }}'>
+<div class='row'>
+    <div class='col-md-12'>
+      <h1>Click For Points</h1>
+      <div><span id='time_left'></span> seconds remaining.</div>
+      <div class="progress" id='progress_countdown'>
+        <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <p>How fast can you click on the progress bar? The more clicks you do the closer you get to
+      100%. We use percentage here because the LTI tool won't know how many
+      points are connected to this assignment in Canvas.</p>
+    </div>
+    <div class='col-md-12'>
+        <div class='input-group col-md-4 input-lg col-md-offset-4' style='text-align: center'>
+          <input type='number' class="form-control" 
+                               style="height: 100px; font-size: 4em"
+                               id='percentage' name='percentage' step='any'
+                               min='0' max='100'
+                               placeholder='25' aria-describedby="basic-addon1"/>
+          <span class="input-group-addon add-on" id="basic-addon1"
+             style="height: 100px; font-size: 4em" >%</span>
+        </div>
+    </div>
+</div>
+
+<!-- 
+<div class='row'>
+  <div class='col-md-4 col-md-offset-5'>
+      <button type="submit" class="btn btn-primary btn-lg" id='save_btn'>Save Score</button>
+  </div>
+</div>
+-->
+</form>
+
+</div> <!-- /container -->
+
+<div class="modal fade" id='my_modal'>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Grade <span id='sub_status'></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><span id='sub_status_msg'></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+          data-dismiss="modal">Great, thanks!</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // submit the score via ajax and display a message
+
+  function timer()
+  {
+    count=count-1;
+    if (count <= 0)
+    {
+       clearInterval(counter);
+       //counter ended, do something here
+       // submit points
+       submit_score();
+       return;
+    }
+
+    //Do code for showing the number of seconds here
+    $('#time_left').text(count);
+  }
+
+  var clicks = 0;
+  var count=20;
+  var counter=setInterval(timer, 1000); //1000 will  run it every 1 second
+  var submit_score = function(){
+      //e.preventDefault();
+      var url = '{{ url_for('choose_own_grade_selected') }}';
+      $.post(url, {
+        percentage: $('#percentage').val() 
+      }).then(function(response){
+        console.log(response);
+        $('#sub_status').text((response.response ? "Submitted" : "Not Submitted"));
+        if(response.response){
+          $('#sub_status_msg').text('Your grade of '+ $('#percentage').val() +'% was submitted to Canvas.');
+        }else{
+          $('#sub_status_msg').text('There was a problem submitting to Canvas.');
+        }
+        $('#my_modal').modal()
+      });
+    };
+
+  $(document).ready(function(){
+    $('#time_left').text(count);
+    $('#save_btn').click(submit_score);
+    $('#progress_countdown').click(function(){
+      clicks = clicks + 1;
+      if(clicks > 100){
+        clicks = 100;
+      }
+      console.log('st'+clicks);
+      $('#progress_countdown div.progress-bar').css('width', clicks+'%').attr('aria-valuenow', clicks);
+      $('#percentage').val(clicks);
+    });
+  });
+
+</script>
+{% endblock %}
+
+{% block extra_css %}
+{% endblock %}

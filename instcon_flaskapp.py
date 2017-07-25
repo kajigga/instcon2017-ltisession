@@ -3,12 +3,13 @@ This file creates your application.
 """
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
+from flask import render_template_string
 from flask import make_response
 from pylti.flask import lti
 from pylti.common import LTI_PROPERTY_LIST, LTI_ROLES
 from tools_list import tools
-from flask import render_template_string
 import requests, urllib
+from flask import jsonify
 
 app = Flask(__name__)
 app.debug = True
@@ -54,6 +55,7 @@ LTI_ROLES[ 'urn:lti:instrole:ims/lis/Student' ] = [
 consumers = {
  "abc123": {"secret": "secretkey-for-abc123"}
 }
+
 # Configure flask app with PYLTI config, specifically the consumers
 app.config['PYLTI_CONFIG'] = {'consumers': consumers}
 
@@ -102,7 +104,6 @@ def lti_profile(lti, *args, **kwargs):
 @app.route('/lti/mapit')
 @lti(error=error, request='session')
 def mapit_launch(lti):
-
   # Don't forget to add the template file.
   return render_template('mapit_launch.html',G_API_KEY=G_API_KEY)
 
@@ -291,6 +292,18 @@ def baconIpsumFetch(*args,**kwargs):
   else:
     return jsonify(resp)
 
+@app.route('/lti/choose_own_grade')
+@lti(error=error, request='session')
+def choose_own_grade(lti):
+#def choose_own_grade():
+  # Don't forget to add the template file.
+  return render_template('choose_own_grade_clicks.html')
+
+@app.route('/lti/choose_own_grade_selected', methods=['POST'])
+@lti(session='session')
+def choose_own_grade_selected(lti):
+  resp = lti.post_grade(float(request.form.get('percentage'))/100.0) 
+  return jsonify({'response': resp})
 
 @app.route('/lti/config/<tool_id>')
 def lti_config(tool_id):
