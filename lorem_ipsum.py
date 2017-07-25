@@ -5,6 +5,7 @@ from pylti.flask import lti
 
 import urllib
 import requests
+from common import error
 
 lorem_ipsum = Blueprint('lorem_ipsum', __name__, template_folder='templates')
 

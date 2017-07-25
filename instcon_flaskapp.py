@@ -13,6 +13,7 @@ from flask import jsonify
 
 from choose_own_grade import choose_grade
 from lorem_ipsum import lorem_ipsum
+from common import error
 
 app = Flask(__name__)
 app.debug = True
@@ -77,10 +78,6 @@ def index():
 @app.route('/hello_world')
 def hello_world():
     return 'Hello World!'
-
-def error(*args, **kwargs):
-  # TODO Make a better Error Message screen
-  return '{}'.format(kwargs['exception'])
 
 @app.route('/lti/testlaunch', methods=['GET', 'POST'])
 def lti_test_launch():

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template
 from pylti.flask import lti
 from flask import jsonify
+from common import error
 
 choose_grade = Blueprint('choose_grade', __name__,
   template_folder='templates')
