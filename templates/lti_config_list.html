@@ -2,24 +2,30 @@
 
 {% block main_content %}
 <div class='row'>
- <h3>LTI Tool List</h3>
- <table class='table table-striped'>
- {% for tool in tools %}
- <div class="card" style="width: 20rem;">
-   <img class="card-img-top" src="..." alt="Card image cap">
-   <div class="card-block">
-     <h4 class="card-title">{{ tool.title }}</h4>
-     <p class="card-text">{{ tool.description }}</p>
-     <a href="#" class="btn btn-primary">Go somewhere</a>
-      <dl>
-         <dt>Entry Path</dt>
-         <dd>{{ url_for(tool.entry)}}</dd>
+  <div class='col-md-12'>
+   <h3>LTI Tool List</h3>
+  </div>
+</div>
+<div class='row'>
+  <div class='col-md-12'>
+   <h3>LTI Tool List</h3>
+   {% for tool in tools %}
+   <div class="card" style="width: 20rem;">
+     <img class="card-img-top" src="..." alt="Card image cap">
+     <div class="card-block">
+       <h4 class="card-title">{{ tool.title }}</h4>
+       <p class="card-text">{{ tool.description }}</p>
+       <dl>
+          <dt>Entry Path</dt>
+          <dd>{{ url_for(tool.entry)}}</dd>
 
-         <dt>Config URL</dt>
-         <dd><code>{{ url_for('lti_config', _external=True, _scheme='https', tool_id=loop.index0 )}}</code></dd>
-      </dl>
+          <dt>Config URL</dt>
+          <dd><code>{{ url_for('lti_config', _external=True, _scheme='https', tool_id=loop.index0 )}}</code></dd>
+       </dl>
+     </div>
    </div>
- </div>
- {% endfor %}
+   {% endfor %}
+
+  </div>
 </div>
 {% endblock %}
