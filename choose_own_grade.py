@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from pylti.flask import lti
 from flask import jsonify
 from common import error
@@ -16,5 +16,5 @@ def choose_own_grade(lti):
 @choose_grade.route('/lti/choose_own_grade_selected', methods=['POST'])
 @lti(session='session')
 def choose_own_grade_selected(lti):
-  resp = lti.post_grade(float(request.form.get('percentage'))/100.0) 
+  resp = lti.post_grade(float(request.form.get('percentage'))/100.0)
   return jsonify({'response': resp})
