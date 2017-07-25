@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block main_content %}
+<div class='row'>
  <h3>LTI Tool List</h3>
  <table class='table table-striped'>
  {% for tool in tools %}
@@ -19,4 +20,5 @@
      </dl>
   </div>
  {% endfor %}
+</div>
 {% endblock %}
