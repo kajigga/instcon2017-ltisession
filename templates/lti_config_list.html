@@ -4,22 +4,19 @@
  <h3>LTI Tool List</h3>
  <table class='table table-striped'>
  {% for tool in tools %}
- <h3>{{ tool.title }}</h3>
- <dl>
-    <dt>Entry Path</dt>
-    <dd>{{ url_for(tool.entry)}}</dd>
+ <div class="card" style="width: 20rem;">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div class="card-block">
+    <h4 class="card-title">{{ tool.title }}</h4>
+    <p class="card-text">{{ tool.description }}</p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+     <dl>
+        <dt>Entry Path</dt>
+        <dd>{{ url_for(tool.entry)}}</dd>
 
-    <dt>Config URL</dt>
-    <dd><code>{{ url_for('lti_config', _external=True, _scheme='https', tool_id=loop.index0 )}}</code></dd>
-
-
-    <dt>Description</dt>
-    <dd>{{ tool.description }}</dd>
- </dl>
- <tr>
-   <th>{{ key }}</th>
-   <td>{{ session[key] }}</td>
- </tr>
+        <dt>Config URL</dt>
+        <dd><code>{{ url_for('lti_config', _external=True, _scheme='https', tool_id=loop.index0 )}}</code></dd>
+     </dl>
+  </div>
  {% endfor %}
- </dl>
 {% endblock %}
