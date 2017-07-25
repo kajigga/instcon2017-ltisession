@@ -12,7 +12,7 @@ tools = [{
      'text': 'course navigation text',
      }
    ]
-  },{ 
+  },{
    'domain' : domain,
    'title' : 'Google Map Tool',
    'description' : 'This is the step 4 Google Map Tool',
@@ -25,5 +25,16 @@ tools = [{
      'text': 'course navigation text',
      }
    ]
-  }
+  },{
+     'domain' : domain,
+     'title' : 'Lorem Ipsum',
+     'description' : '''This is the step 6 LTI Tool, which enables a richtext
+     editor button that, when clicked, allows the user to insert a Lorem Ipsum
+     text snippet.''',
+     'editor_button':{
+         'icon_url':'https://dl.dropboxusercontent.com/u/1647772/lorem.png',
+         "selection_width":550,
+         "selection_height":400
+     }
+ }
 ]

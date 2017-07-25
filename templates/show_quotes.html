@@ -1,0 +1,14 @@
+<h3>{{ lorem.label }}</h3>
+{% for p in paragraphs %}
+<div class='content-box'>
+ <div class='grid-row'>
+ <div class='col-xs-1'>
+ <img class='avatar' style="width:75px; height: 75px" src="http://loremflickr.com/75/75?randomstuff={{ loop.index }}" width="75px" height="75px"/>
+ </div>
+ <div class='col-xs-11'>
+ <p>{{ p.quote | safe }}</p>
+ <footer class='text-right'><cite title="{{ p.source }}"><em>{{ p.source }}</em></cite></footer>
+ </div>
+ </div>
+</div>
+{% endfor %}

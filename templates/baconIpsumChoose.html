@@ -1,0 +1,96 @@
+{% extends 'layout.html'%}
+{% block page_title %}Choose your Bacon{% endblock %}
+
+{% block main_content %}
+<div class='col-sm-12'>
+ <p>What would you like?</p>
+ <div class='btn-group' role='group' aria-label=''>
+ <button class='btn btn-default' type='button' id='kitten_btn'>Kitten Image</button>
+ <button class='btn btn-default' type='button' id='lorem_btn'>Lorem Ipsum</button>
+ <button class='btn btn-default' type='button' id='embed_iframe_btn'>Embed iFrame</button>
+ <button class='btn btn-default' type='button' id='random_dilbert_btn'>Random Dilbert</button>
+ </div>
+ <form class='form-vertical' action='{{ url_for("baconIpsumChoose" ) }}' method='POST'>
+ <input type='hidden' name='wanted_type' id='wanted_type' value='img'/>
+
+ <div id='kitten_fields' style='display:none'>
+ <div class="form-group">
+ <label for="width" class="control-label">Width</label>
+ <div class="">
+ <input type="number" class="form-control" id="width" name='width' placeholder="width">
+ </div>
+ </div>
+ <div class="form-group">
+ <label for="height" class="control-label">Height</label>
+ <div class="">
+ <input type="number" class="form-control" id="height" name='height' placeholder="height">
+ </div>
+ </div>
+ <img id='kitten_preview' src='https://placekitten.com/g/100/100' height='100px' width='100px' alt='kitten image'/>
+ </div>
+
+ <div id='lorem_fields' style='display:none'>
+ <div class="form-group">
+
+ {% for lorem_type in lorem_types %}
+ <div class="radio">
+ <label>
+ <input type="radio" name="lorem_type"
+ value="{{lorem_types[lorem_type].name}}">
+ {{ lorem_types[lorem_type].label }}
+ </label>
+ </div>
+ {% endfor %}
+ </div>
+
+ <div class='form-group'>
+ <label for="num_para" class="control-label">number of paragraphs</label>
+ <div class=''>
+ <select name='num_para' class='form-control'>
+ <option value='5'>5</option>
+ <option value='4'>4</option>
+ <option value='3'>3</option>
+ <option value='2'>2</option>
+ <option value='1'>1</option>
+
+ </select>
+ </div>
+ </div>
+ </div>
+
+ <div id='iframe_fields' style='display:none'>
+ <div class="form-group">
+ <label for="iframe_title" class="control-label">Title</label>
+ <input type="textbox" class="form-control" id="iframe_title"
+ name='iframe_title' placeholder="optional, iframe title" />
+ </div>
+ <div class="form-group">
+ <label for="iframe_width" class="control-label">Width</label>
+ <input type="number" class="form-control" id="iframe_width"
+ name='iframe_width' placeholder="width" value="640px"/>
+ </div>
+ <div class="form-group">
+ <label for="iframe_height" class="control-label">Height</label>
+ <input type="number" class="form-control" id="iframe_height"
+ name='iframe_height' placeholder="height" value="200px"/>
+ </div>
+ <div class="form-group">
+ <label for="iframe_url" class="control-label">URL</label>
+ <input type="textbox" name="iframe_url" id="iframe_url"
+ class="form-control" placeholder="src for iframe"/>
+ </div>
+
+ <iframe id="iframe_preview" src="" height="200" width="640"></iframe>
+ </div>
+
+ <button class='btn btn-primary' type='submit'
+ name='submit' value='submit' id='wanted_submit_btn' style='display:none'>Get Content</button>
+ </form>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type='text/javascript' src='/static/lorem_ipsum.js'></script>
+{% endblock %}
