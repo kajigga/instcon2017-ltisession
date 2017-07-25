@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block main_content %}
+ <h3>LTI Tool List</h3>
+ <table class='table table-striped'>
+ {% for tool in tools %}
+ <h3>{{ tool.title }}</h3>
+ <dl>
+    <dt>Entry Path</dt>
+    <dd>{{ url_for(tool.entry)}}</dd>
+
+    <dt>Config URL</dt>
+    <dd><code>{{ url_for('lti_config', _external=True, _scheme='https', tool_id=loop.index0 )}}</code></dd>
+
+
+    <dt>Description</dt>
+    <dd>{{ tool.description }}</dd>
+ </dl>
+ <tr>
+   <th>{{ key }}</th>
+   <td>{{ session[key] }}</td>
+ </tr>
+ {% endfor %}
+ </dl>
+{% endblock %}

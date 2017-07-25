@@ -305,7 +305,12 @@ def choose_own_grade_selected(lti):
   resp = lti.post_grade(float(request.form.get('percentage'))/100.0) 
   return jsonify({'response': resp})
 
-@app.route('/lti/config/<tool_id>')
+@app.route('/lti/config/list')
+def lti_config_list():
+  # Get list of tools and display them all on a page
+  return render_template('lti_config_list.html', tools=tools)
+
+@app.route('/lti/config/<int:tool_id>')
 def lti_config(tool_id):
   tool_id = int(tool_id)
   tool_config = tools[tool_id]
