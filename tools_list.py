@@ -28,6 +28,7 @@ tools = [{
   },{
      'domain' : domain,
      'title' : 'Lorem Ipsum',
+     'entry': 'baconIpsumChoose',
      'description' : '''This is the step 6 LTI Tool, which enables a richtext
      editor button that, when clicked, allows the user to insert a Lorem Ipsum
      text snippet.''',
