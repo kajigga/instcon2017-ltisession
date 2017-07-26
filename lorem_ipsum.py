@@ -69,14 +69,14 @@ def baconIpsumChoose(lti, *args, **kwargs):
     # For some reason, we can't use https here... see
     # canvas-lms/app/controllers/external_content_controller.rb
     red_args = {'oembed' :{
-        'url':     url_for('baconIpsumFetch', _external=True, _scheme='https', args=['lkjlkjlk']),
+        'url':     url_for('lorem_ipsum.baconIpsumFetch', _external=True, _scheme='https', args=['lkjlkjlk']),
         'endpoint':'',
         'width':'400',
         'height':'400',
         'embed_type':'oembed',
         },
     'link': { # works
-        'url':     url_for('baconIpsumFetch', _external=True, _scheme='https',args=['lkjlkjlk']),
+        'url':     url_for('lorem_ipsum.baconIpsumFetch', _external=True, _scheme='https',args=['lkjlkjlk']),
         'title':'this is the title',
         'text':'link text',
         'embed_type':'link'
@@ -122,8 +122,8 @@ def baconIpsumChoose(lti, *args, **kwargs):
         pass
       elif wanted_type == 'oembed':
         show = request.form.get('show','none')
-        url_for('baconIpsumFetch', _external=True, _scheme='https',args=['lkjlkjlk'])
-        red_args['oembed']['endpoint'] = url_for('baconIpsumFetch', _external=True, _scheme='https',**dict(request.form))
+        url_for('lorem_ipsum.baconIpsumFetch', _external=True, _scheme='https',args=['lkjlkjlk'])
+        red_args['oembed']['endpoint'] = url_for('lorem_ipsum.baconIpsumFetch', _external=True, _scheme='https',**dict(request.form))
         red_args['oembed']['url'] = red_args['oembed']['endpoint'] #.replace('https','http')
 
       redirect_url = success_url +"?"+ urllib.urlencode(red_args[wanted_type])
