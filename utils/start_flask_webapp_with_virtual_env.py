@@ -63,9 +63,8 @@ def _virtualenv_path(domain):
 def _project_folder(domain):
     return os.path.expanduser('~/' + domain)
 
-
 def sanity_checks(domain, nuke):
-    print(print('Running sanity checks'))
+    print('Running sanity checks')
     token = os.environ.get('API_TOKEN')
     if not token:
         raise SanityException(dedent(
@@ -84,21 +83,13 @@ def sanity_checks(domain, nuke):
         raise SanityException('You already have a webapp for {}.\n\nUse the --nuke option if you want to replace it.'.format(domain))
     if os.path.exists(_virtualenv_path(domain)):
         raise SanityException('You already have a virtualenv for {}.\n\nUse the --nuke option if you want to replace it.'.format(domain))
-    project_folder = _project_folder(domain)
-    if os.path.exists(project_folder):
-        raise SanityException('You already have a project folder at {}.\n\nUse the --nuke option if you want to replace it.'.format(project_folder))
-
-
+    project_folder = _project_folder('instcon2017')
 
 def create_virtualenv(name, python_version, flask_version, nuke):
-    print(print(f'Creating virtualenv with Python{python_version} and Flask=={flask_version}'))
-    pip_install = 'pip install flask'
-    
-    if flask_version != 'latest':
-        pip_install += '==' + flask_version
-    command = 'mkvirtualenv --python=/usr/bin/python{python_version} {name} && {pip_install}'.format(
-        name=name, python_version=python_version, pip_install=pip_install
-    )
+    print(f'Creating virtualenv with Python{python_version}')
+
+    command = 'mkvirtualenv --python=/usr/bin/python{python_version} {name}'.format(
+        name=name, python_version=python_version)
     if nuke:
         command = 'rmvirtualenv {name} && {old_command}'.format(
             name=name, old_command=command
@@ -107,59 +98,14 @@ def create_virtualenv(name, python_version, flask_version, nuke):
     return _virtualenv_path(name)
 
 
-
-
 def start_flask_project(domain, virtualenv_path, nuke):
-    print(print('Starting Flask project'))
-    target_folder = _project_folder(domain)
-    if nuke:
-        shutil.rmtree(target_folder)
-    os.mkdir(target_folder)
-    subprocess.check_call([
-        os.path.join(virtualenv_path, 'bin/flask-admin.py'),
-        'startproject',
-        'mysite',
-        target_folder
-    ])
-    return target_folder
-
-
-
-def run_collectstatic(virtualenv_path, target_folder):
-    print(print('Running collectstatic'))
-
-    subprocess.check_call([
-        os.path.join(virtualenv_path, 'bin/python'),
-        os.path.join(target_folder, 'manage.py'),
-        'collectstatic',
-        '--noinput',
-    ])
-
-
-
-def update_settings_file(domain, project_path):
-    print(print('Updating settings.py'))
-
-    with open(os.path.join(project_path, 'mysite', 'settings.py')) as f:
-        settings = f.read()
-    new_settings = settings.replace(
-        'ALLOWED_HOSTS = []',
-        "ALLOWED_HOSTS = [{!r}]".format(domain)
-    )
-    new_settings += dedent(
-        """
-        MEDIA_URL = '/media/'
-        STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-        MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-        """
-    )
-    with open(os.path.join(project_path, 'mysite', 'settings.py'), 'w') as f:
-        f.write(new_settings)
+    print('Starting Flask project')
+    return _project_folder(domain)
 
 
 
 def create_webapp(domain, python_version, virtualenv_path, project_path, nuke):
-    print(print('Creating web app via API'))
+    print('Creating web app via API')
     if nuke:
         webapp_url = API_ENDPOINT.format(username=getpass.getuser()) + domain + '/'
         call_api(webapp_url, 'delete')
@@ -177,7 +123,7 @@ def create_webapp(domain, python_version, virtualenv_path, project_path, nuke):
 
 
 def add_static_file_mappings(domain, project_path):
-    print(print('Adding static files mappings for /static/ and /media/'))
+    print('Adding static files mappings for /static/ and /media/')
 
     url = API_ENDPOINT.format(username=getpass.getuser()) + domain + '/static_files/'
     call_api(url, 'post', json=dict(
@@ -191,7 +137,7 @@ def add_static_file_mappings(domain, project_path):
 
 
 def update_wsgi_file(wsgi_file_path, project_path):
-    print(print(f'Updating wsgi file at {wsgi_file_path}'))
+    print(f'Updating wsgi file at {wsgi_file_path} with project_path {project_path}')
 
     template = open(os.path.join(os.path.dirname(__file__), 'wsgi_file_template.py')).read()
     with open(wsgi_file_path, 'w') as f:
@@ -214,15 +160,12 @@ def main(domain, flask_version, python_version, nuke):
         domain = '{}.pythonanywhere.com'.format(username)
     sanity_checks(domain, nuke=nuke)
     virtualenv_path = create_virtualenv(domain, python_version, flask_version, nuke=nuke)
-    project_path = start_flask_project(domain, virtualenv_path, nuke=nuke)
-    update_settings_file(domain, project_path)
-
-    # TODO Is this needed with flask?
-    run_collectstatic(virtualenv_path, project_path)
+    project_path = start_flask_project('instcon2017', virtualenv_path, nuke=nuke)
 
     # TODO Make sure this works with the Flask App
     create_webapp(domain, python_version, virtualenv_path, project_path, nuke=nuke)
     add_static_file_mappings(domain, project_path)
+    #wsgi_file_path = '/var/www/' + domain.replace('.', '_') + '_wsgi.py'
     wsgi_file_path = '/var/www/' + domain.replace('.', '_') + '_wsgi.py'
     update_wsgi_file(wsgi_file_path, project_path)
     reload_webapp(domain)
@@ -234,3 +177,4 @@ def main(domain, flask_version, python_version, nuke):
 if __name__ == '__main__':
     arguments = docopt(__doc__)
     main(arguments['--domain'], arguments['--flask'], arguments['--python'], nuke=arguments.get('--nuke'))
+
